@@ -225,3 +225,21 @@ def test_undone_prompt_content_absent(page, site_url):
     assert 'class="org"' not in html
     for gone in ["Circular by design", "Chaturanga", "Infinitely Circular", "⚙"]:
         assert gone.lower() not in html.lower(), gone
+
+
+def test_early_submit_does_not_reload(browser, site_url):
+    """Clicking Calculate before the factor file arrives must not reload the page."""
+    ctx = browser.new_context()
+    pg = ctx.new_page()
+    release = []
+    pg.route("**/data/factors.json", lambda route, req: release.append(route))
+    pg.goto(site_url + "/index.html", wait_until="domcontentloaded")
+    pg.fill("#quantity", "100")
+    pg.wait_for_function("document.querySelector('#gauge svg') !== null")  # page script is running
+    pg.click("button[type=submit]")
+    pg.wait_for_timeout(300)
+    assert "?" not in pg.url  # no form-submit navigation
+    release[0].continue_()
+    pg.click("button[type=submit]")
+    pg.wait_for_function("document.querySelector('#co2-value').textContent === '170.0'")
+    ctx.close()

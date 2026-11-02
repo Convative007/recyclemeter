@@ -179,6 +179,8 @@ function restore() {
 }
 
 async function init() {
+  // Stop an early click on "Calculate" from reloading the page while the factors are still loading.
+  form.addEventListener('submit', (e) => e.preventDefault());
   buildGauge();
   watchSections();
   watchTooltip();
