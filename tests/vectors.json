@@ -1,0 +1,126 @@
+{
+  "tolerance_rel": 1e-09,
+  "cases": [
+    {
+      "input": {
+        "material": "PET",
+        "quantity": 100,
+        "unit": "kg",
+        "timeframe": "once"
+      },
+      "expected": {
+        "mass_kg": 100,
+        "co2_kg": 170.0,
+        "annual_kg": null,
+        "trees": 7.8341013824884795,
+        "petrol_litres": 73.91304347826087,
+        "phone_charges": 20570.0
+      }
+    },
+    {
+      "input": {
+        "material": "HDPE",
+        "quantity": 100,
+        "unit": "lb",
+        "timeframe": "once"
+      },
+      "expected": {
+        "mass_kg": 45.3592,
+        "co2_kg": 49.895120000000006,
+        "annual_kg": null,
+        "trees": 2.299314285714286,
+        "petrol_litres": 21.693530434782613,
+        "phone_charges": 6037.309520000001
+      }
+    },
+    {
+      "input": {
+        "material": "PP",
+        "quantity": 2.5,
+        "unit": "kg",
+        "timeframe": "monthly"
+      },
+      "expected": {
+        "mass_kg": 2.5,
+        "co2_kg": 2.75,
+        "annual_kg": 33.0,
+        "trees": 0.12672811059907835,
+        "petrol_litres": 1.1956521739130437,
+        "phone_charges": 332.75
+      }
+    },
+    {
+      "input": {
+        "material": "MIXED",
+        "quantity": 1,
+        "unit": "kg",
+        "timeframe": "once"
+      },
+      "expected": {
+        "mass_kg": 1,
+        "co2_kg": 1.3,
+        "annual_kg": null,
+        "trees": 0.05990783410138249,
+        "petrol_litres": 0.5652173913043479,
+        "phone_charges": 157.3
+      }
+    },
+    {
+      "input": {
+        "material": "PET",
+        "quantity": 0.001,
+        "unit": "kg",
+        "timeframe": "once"
+      },
+      "expected": {
+        "mass_kg": 0.001,
+        "co2_kg": 0.0017,
+        "annual_kg": null,
+        "trees": 7.834101382488479e-05,
+        "petrol_litres": 0.0007391304347826087,
+        "phone_charges": 0.2057
+      }
+    },
+    {
+      "input": {
+        "material": "MIXED",
+        "quantity": 12500,
+        "unit": "lb",
+        "timeframe": "monthly"
+      },
+      "expected": {
+        "mass_kg": 5669.9,
+        "co2_kg": 7370.87,
+        "annual_kg": 88450.44,
+        "trees": 339.6714285714286,
+        "petrol_litres": 3204.726086956522,
+        "phone_charges": 891875.27
+      }
+    },
+    {
+      "input": {
+        "material": "PP",
+        "quantity": 1000000.0,
+        "unit": "kg",
+        "timeframe": "once"
+      },
+      "expected": {
+        "mass_kg": 1000000.0,
+        "co2_kg": 1100000.0,
+        "annual_kg": null,
+        "trees": 50691.244239631334,
+        "petrol_litres": 478260.8695652174,
+        "phone_charges": 133100000.0
+      }
+    }
+  ],
+  "reference_case": {
+    "input": {
+      "material": "PET",
+      "quantity": 100,
+      "unit": "kg",
+      "timeframe": "once"
+    },
+    "date": "2026-11-02"
+  }
+}

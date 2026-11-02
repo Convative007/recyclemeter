@@ -1,0 +1,11 @@
+.venv/
+dist/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/artifacts/
+.DS_Store
+# Private working documents: never publish
+*.pdf
+scripts/
+NOTES.local.md

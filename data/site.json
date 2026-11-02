@@ -1,0 +1,12 @@
+{
+  "name": "RecycleMeter",
+  "tagline": "Plastic recycling impact calculator",
+  "description": "Estimate the greenhouse gas emissions avoided by recycling plastic, and see what they mean in everyday terms.",
+  "lead": {
+    "name": "Prof. Suryasarathi Bose",
+    "role": "Department of Materials Engineering",
+    "institution": "Indian Institute of Science (IISc), Bengaluru"
+  },
+  "year": 2026,
+  "email": "impact@recyclemeter.org"
+}

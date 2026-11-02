@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon, logo, wordmark %}
+{% set ex = example.result %}
+{% block main %}
+<section class="hero" id="calculator" aria-labelledby="calc-title">
+  <div class="wrap">
+    <div class="hero-intro">
+      <p class="kicker">RecycleMeter Calculator</p>
+      <h1 id="calc-title">See the climate impact of the plastic you recycle.</h1>
+      <p class="lede">Choose a plastic type and enter how much was recycled. RecycleMeter estimates the greenhouse gas emissions avoided by not producing the same amount of virgin plastic, and shows what that means in everyday terms.</p>
+    </div>
+
+    <noscript><p class="card" style="padding:1rem">The calculator needs JavaScript, which runs only in your browser. The formula and factors are listed under <a href="#how-it-works">How It Works</a>.</p></noscript>
+
+    <div class="calc-grid">
+      <form class="card calc" id="calc-form" novalidate autocomplete="off">
+        <div class="card-head"><h2>Your recycling</h2><span class="step">INPUT</span></div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="material">Plastic type</label>
+            <span class="mech">
+              <button type="button" class="mech-badge" aria-describedby="mech-tip" aria-expanded="false">{{ icon("gear") }}Mechanical Recycling Baseline</button>
+              <span class="mech-tip" role="tooltip" id="mech-tip">Metrics reflect physical mechanical processing (sorting, washing, extrusion) rather than thermal pyrolysis or chemical recycling.</span>
+            </span>
+          </div>
+          <div class="select">
+            <select id="material" name="material">
+              {% for m in registry.materials %}<option value="{{ m.id }}">{{ m.label }}{% if m.id != "MIXED" %} &ndash; {{ m.name }}{% endif %}</option>{% endfor %}
+            </select>
+          </div>
+          <p class="hint" id="material-hint">{{ registry.materials[0].examples }}</p>
+        </div>
+
+        <div class="field">
+          <label for="quantity">Weight recycled</label>
+          <div class="weight">
+            <input type="text" id="quantity" name="quantity" inputmode="decimal" placeholder="e.g. 250" aria-describedby="quantity-errors">
+            <div class="toggle" role="radiogroup" aria-label="Unit">
+              <label><input type="radio" name="unit" value="kg" checked><span>kg</span></label>
+              <label><input type="radio" name="unit" value="lb"><span>lbs</span></label>
+            </div>
+          </div>
+          <ul class="errors" id="quantity-errors" aria-live="polite"></ul>
+        </div>
+
+        <fieldset class="field">
+          <legend>Is this a one-time recycle, or monthly?</legend>
+          <div class="toggle wide" role="radiogroup">
+            <label><input type="radio" name="timeframe" value="once" checked><span>One-time</span></label>
+            <label><input type="radio" name="timeframe" value="monthly"><span>Monthly</span></label>
+          </div>
+        </fieldset>
+
+        <button class="btn btn-primary block" type="submit">Calculate impact {{ icon("arrow") }}</button>
+        <p class="hint" style="text-align:center">Use the weight that was actually sent for recycling.</p>
+      </form>
+
+      <div class="card meter is-empty" id="meter" aria-live="polite">
+        <div class="card-head"><h2>Total CO<sub>2</sub> prevented</h2><span class="step">RESULT</span></div>
+        <div class="gauge" id="gauge" aria-hidden="true"></div>
+        <p class="gauge-scale">Scale: 1 kg to 100 tonnes CO&#8322;e, logarithmic</p>
+        <div class="readout">
+          <div class="label" id="readout-label">Prevented</div>
+          <div class="value"><b id="co2-value">0</b><span id="co2-unit">kg CO&#8322;e</span></div>
+          <p class="context" id="co2-context">Enter a weight and select <b>Calculate impact</b>.</p>
+          <p class="annual" id="annual" hidden></p>
+        </div>
+        <div class="meter-foot">
+          <a class="btn btn-ghost" id="report-link" href="#impact-reports" aria-disabled="true">{{ icon("report") }} View impact report</a>
+          <a class="btn btn-ghost" href="#how-it-works">How we calculate this</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash" id="dashboard" aria-label="Everyday equivalents">
+      <div class="card metric">
+        <span class="badge">{{ icon("tree") }}</span>
+        <span class="n" id="trees">&ndash;</span>
+        <span class="what">Trees planted equivalent</span>
+        <span class="how">CO&#8322; prevented &divide; {{ registry.equivalencies.tree_kg_per_year.value }} kg, the CO&#8322; a mature tree absorbs in a year</span>
+      </div>
+      <div class="card metric">
+        <span class="badge">{{ icon("fuel") }}</span>
+        <span class="n" id="petrol">&ndash;</span>
+        <span class="what">Litres of petrol not burned</span>
+        <span class="how">CO&#8322; prevented &divide; {{ registry.equivalencies.petrol_kg_per_litre.value }} kg per litre</span>
+      </div>
+      <div class="card metric">
+        <span class="badge">{{ icon("phone") }}</span>
+        <span class="n" id="phones">&ndash;</span>
+        <span class="what">Smartphone charges powered</span>
+        <span class="how">CO&#8322; prevented &times; {{ registry.equivalencies.phone_charges_per_kg.value }} charges per kg</span>
+      </div>
+    </div>
+
+    <div class="card compare" id="compare" hidden>
+      <div class="compare-head">
+        <h3>Virgin plastic versus recycled</h3>
+        <span class="small muted" id="compare-sub"></span>
+      </div>
+      <div class="bars" id="bars"></div>
+      <p class="note" id="compare-note"></p>
+    </div>
+
+    <p class="results-footnote">*Net savings reflect cradle-to-gate mechanical recycling inventories displacing virgin petrochemical synthesis. Informed by: Franklin Associates / APR &amp; US EPA WARM.</p>
+  </div>
+</section>
+
+<section class="alt" id="how-it-works" aria-labelledby="how-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">How It Works</p>
+      <h2 id="how-title">Transparent formulas, scientific references and calculation assumptions.</h2>
+      <p class="lede">Producing plastic from petrochemicals is energy intensive. Recycling recovers the polymer and skips most of that step. RecycleMeter estimates the difference.</p>
+    </div>
+
+    <ol class="steps steps-list">
+      <li class="card"><h3>Tell us what you recycled</h3><p>Pick the plastic type and enter the weight, in kilograms or pounds. Pounds are converted at 1 lb = {{ registry.units.kg_per_lb }} kg.</p></li>
+      <li class="card"><h3>We apply the emission factor</h3><p>Each kilogram is multiplied by the emissions saved when recycled material replaces virgin plastic.</p></li>
+      <li class="card"><h3>We translate it</h3><p>The total is expressed as trees, litres of petrol and smartphone charges, so it is easier to picture.</p></li>
+    </ol>
+
+    <div class="card formula">
+      <h3>The formula</h3>
+      <div class="formula-eq" role="math" aria-label="CO2 saved in kilograms equals weight recycled in kilograms times the difference between virgin and recycled emission factors">
+        <span class="term key">CO&#8322; saved (kg)</span><span class="op">=</span>
+        <span class="term">Weight recycled (kg)</span><span class="op">&times;</span>
+        <span class="term">(EF<sub>virgin</sub> &minus; EF<sub>recycled</sub>)</span>
+      </div>
+      <p class="small muted" style="margin:0">EF is an emission factor in kg CO&#8322;e per kg of plastic. The difference is the net saving per kilogram, shown in the right-hand column below. For a monthly figure, the result is also multiplied by 12 to give an annual total.</p>
+    </div>
+
+    <div class="two">
+      <div class="card table-card">
+        <h3>Emission factors</h3>
+        <div class="scroll-x">
+          <table>
+            <thead><tr><th scope="col">Plastic</th><th scope="col" class="r">Virgin</th><th scope="col" class="r">Recycled</th><th scope="col" class="r">Saved per kg</th></tr></thead>
+            <tbody>
+            {% for m in registry.materials %}
+              <tr><th scope="row">{{ m.label }}</th>
+                <td class="r">{{ m.ef_virgin if m.ef_virgin is not none else "&ndash;"|safe }}</td>
+                <td class="r">{{ m.ef_recycled if m.ef_recycled is not none else "&ndash;"|safe }}</td>
+                <td class="r key">{{ m.multiplier }}</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="note">kg CO&#8322;e per kg. Average values for mechanical recycling versus virgin production. Mixed plastics use a single composite saving.</p>
+      </div>
+      <div class="card table-card">
+        <h3>Everyday equivalents</h3>
+        <div class="scroll-x">
+          <table>
+            <thead><tr><th scope="col">Equivalent</th><th scope="col" class="r">Calculation</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Trees planted</th><td class="r">CO&#8322; &divide; {{ registry.equivalencies.tree_kg_per_year.value }}</td></tr>
+              <tr><th scope="row">Litres of petrol</th><td class="r">CO&#8322; &divide; {{ registry.equivalencies.petrol_kg_per_litre.value }}</td></tr>
+              <tr><th scope="row">Smartphone charges</th><td class="r">CO&#8322; &times; {{ registry.equivalencies.phone_charges_per_kg.value }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">A mature tree absorbs about {{ registry.equivalencies.tree_kg_per_year.value }} kg of CO&#8322; a year; burning a litre of petrol releases about {{ registry.equivalencies.petrol_kg_per_litre.value }} kg; one kilogram of CO&#8322; corresponds to the electricity for about {{ registry.equivalencies.phone_charges_per_kg.value }} smartphone charges.</p>
+      </div>
+    </div>
+
+    <details class="card assume" id="methodology-science">
+      <summary>Methodology &amp; Science</summary>
+      <div class="body">
+        <div class="scope-callout" id="system-scope">
+          <h3>System Scope &amp; Recycling Methodology</h3>
+          <p>All carbon displacement values and emission factors in RecycleMeter are modeled strictly on <strong>closed-loop mechanical recycling</strong> (collection, sorting, shredding, hot washing, and extrusion/compression molding). Unlike thermal chemical recycling (such as pyrolysis or gasification), mechanical recycling largely preserves the base polymer chains using physical force and moderate electrical heat, avoiding the massive energy footprint of fossil petrochemical cracking. Calculations reflect displacement of primary virgin resin pellets, following the principles of ISO 14044/14067 and informed by the US EPA WARM dataset (Franklin Associates &amp; APR).</p>
+        </div>
+        <h3 class="assume-h">Calculation assumptions</h3>
+        <ul>
+          <li>The weight entered is plastic that was actually recycled, not only collected.</li>
+          <li>Each kilogram of recycled plastic replaces one kilogram of virgin plastic of the same type.</li>
+          <li>Emission factors are averages for mechanical recycling. Real values vary with the facility, energy source, transport and material quality.</li>
+          <li>Mixed plastics use a composite saving of {{ registry.materials[3].multiplier }} kg CO&#8322;e per kg.</li>
+          <li>Equivalents are illustrative. They do not mean trees were planted or fuel was saved.</li>
+          <li>Results are indicative estimates, not a certified carbon footprint.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="impact-reports" aria-labelledby="reports-title">
+  <div class="wrap reports">
+    <div>
+      <p class="kicker">Impact Reports</p>
+      <h2 id="reports-title" style="margin-bottom:.9rem">Downloadable calculation summaries with source references.</h2>
+      <p class="lede" style="margin-bottom:1.5rem">Turn any calculation into a one-page report you can print, save as PDF or share.</p>
+      <ul class="checks">
+        <li>{{ icon("check") }}<span>A unique reference number and the date of the calculation</span></li>
+        <li>{{ icon("check") }}<span>Your inputs, the CO&#8322; prevented and all three equivalents</span></li>
+        <li>{{ icon("check") }}<span>The formula, emission factors and academic references used</span></li>
+        <li>{{ icon("check") }}<span>Print, save as PDF, or download the data as a file</span></li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn-primary" id="report-cta" href="#calculator" aria-disabled="true">{{ icon("report") }} Create report</a>
+        <span class="small muted" id="report-cta-hint">Run a calculation first.</span>
+      </div>
+    </div>
+    <div class="card sheet" aria-hidden="true">
+      <span class="sample-tag">Sample</span>
+      <div class="sheet-top">
+        <span class="brand-sm">{{ logo() }} RecycleMeter</span>
+        <span class="sheet-ref">RM-{{ build_date|replace("-", "") }}-SAMPLE<br>Impact report</span>
+      </div>
+      <div class="small muted">{{ example.input.quantity|int }} kg PET recycled</div>
+      <div class="sheet-big">{{ "%.1f"|format(ex.co2_kg) }} <span>kg CO&#8322;e prevented</span></div>
+      <div class="sheet-grid">
+        <div><b>{{ "%.1f"|format(ex.trees) }}</b>trees</div>
+        <div><b>{{ "%.1f"|format(ex.petrol_litres) }} L</b>petrol</div>
+        <div><b>{{ "{:,.0f}".format(ex.phone_charges) }}</b>charges</div>
+      </div>
+      <div class="sheet-lines"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="about" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="section-head"><p class="kicker">About</p><h2 id="about-title">About RecycleMeter</h2></div>
+    <div class="about">
+      <div class="about-text">
+        <p>RecycleMeter is a research-led sustainability initiative developed under the scientific leadership of Prof. Suryasarathi Bose, Department of Materials Engineering, Indian Institute of Science (IISc), Bengaluru.</p>
+        <p>RecycleMeter is a non-profit, open-access sustainability tool developed to foster climate literacy across schools, universities, and residential communities. This platform operates without commercial interest or advertising to provide transparent environmental accounting grounded in peer-reviewed research.</p>
+        <p>The platform aims to make scientific methods for assessing the environmental impact of plastic recycling accessible to individuals, educational institutions, researchers and organisations.</p>
+        <p>Using established methodologies, including the US Environmental Protection Agency's Waste Reduction Model (EPA WARM), RecycleMeter helps users understand the potential greenhouse gas benefits associated with recycling different types of plastics.</p>
+        <p>The initiative seeks to bridge scientific research and public awareness by translating complex environmental calculations into simple, transparent and accessible information.</p>
+      </div>
+      <div>
+        <div class="card lead-card">
+          <div class="role">Scientific leadership</div>
+          <h3>{{ site.lead.name }}</h3>
+          <p>{{ site.lead.role }}<br>{{ site.lead.institution }}</p>
+        </div>
+        <ul class="offer">
+          <li class="card"><a href="#calculator"><b>RecycleMeter Calculator</b><span>Estimate the greenhouse gas benefits of recycling plastics using EPA WARM methodology.</span></a></li>
+          <li class="card"><a href="#how-it-works"><b>How It Works</b><span>Transparent formulas, scientific references and calculation assumptions.</span></a></li>
+          <li class="card"><a href="#impact-reports"><b>Impact Reports</b><span>Downloadable calculation summaries with source references.</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" aria-labelledby="contact-title">
+  <div class="wrap contact-inner">
+    <div>
+      <p class="kicker">Contact</p>
+      <h2 id="contact-title" style="margin:0">Get in touch</h2>
+    </div>
+    <p class="contact-email">Email us at <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script type="module" src="assets/js/calculator.js"></script>{% endblock %}

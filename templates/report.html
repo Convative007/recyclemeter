@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% set page_title = "Impact report" %}
+{% block main %}
+<div class="wrap report-wrap">
+  <div class="report-bar">
+    <a class="btn btn-ghost" id="back" href="index.html#calculator">{{ icon("back") }} Back to calculator</a>
+    <button class="btn btn-primary" id="print" type="button" hidden>{{ icon("print") }} Print or save as PDF</button>
+    <button class="btn btn-ghost" id="download" type="button" hidden>{{ icon("download") }} Download data</button>
+    <button class="btn btn-ghost" id="copy" type="button" hidden>{{ icon("link") }} Copy link</button>
+    <span class="small muted" id="copy-status" role="status"></span>
+  </div>
+  {% for n in ["tree", "fuel", "phone"] %}<template id="icon-{{ n }}">{{ icon(n) }}</template>{% endfor %}
+  <article class="card report" id="report">
+    <p class="fail">Preparing your report&hellip;</p>
+  </article>
+</div>
+{% endblock %}
+{% block scripts %}<script type="module" src="assets/js/report.js"></script>{% endblock %}

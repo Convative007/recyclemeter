@@ -1,0 +1,72 @@
+{
+  "registry_version": "2.0.0",
+  "method": "Avoided burden: emissions avoided by replacing virgin plastic production with mechanical recycling",
+  "formula": "CO2e saved (kg) = mass recycled (kg) x (EF_virgin - EF_recycled)",
+  "source": "RecycleMeter factor set: average LCA emission factors for mechanical recycling versus virgin petrochemical synthesis",
+  "units": { "kg_per_lb": 0.453592 },
+  "materials": [
+    {
+      "id": "PET",
+      "label": "PET",
+      "name": "Polyethylene terephthalate",
+      "examples": "Drink bottles, food trays, polyester packaging",
+      "ef_virgin": 2.8,
+      "ef_recycled": 1.1,
+      "multiplier": 1.7
+    },
+    {
+      "id": "HDPE",
+      "label": "HDPE / LDPE",
+      "name": "High- and low-density polyethylene",
+      "examples": "Milk and detergent bottles, carry bags, films",
+      "ef_virgin": 1.8,
+      "ef_recycled": 0.7,
+      "multiplier": 1.1
+    },
+    {
+      "id": "PP",
+      "label": "PP",
+      "name": "Polypropylene",
+      "examples": "Containers, caps, crates, woven sacks",
+      "ef_virgin": 1.9,
+      "ef_recycled": 0.8,
+      "multiplier": 1.1
+    },
+    {
+      "id": "MIXED",
+      "label": "Mixed plastics",
+      "name": "Mixed post-consumer plastics",
+      "examples": "Unsorted household and campus plastic waste",
+      "ef_virgin": null,
+      "ef_recycled": null,
+      "multiplier": 1.3
+    }
+  ],
+  "equivalencies": {
+    "tree_kg_per_year": {
+      "value": 21.7,
+      "label": "CO2 absorbed by one mature tree in a year",
+      "unit": "kg CO2 per tree per year",
+      "operation": "divide"
+    },
+    "petrol_kg_per_litre": {
+      "value": 2.3,
+      "label": "CO2 emitted by burning one litre of petrol",
+      "unit": "kg CO2 per litre",
+      "operation": "divide"
+    },
+    "phone_charges_per_kg": {
+      "value": 121,
+      "label": "Smartphone charges per kg of CO2 (equivalent electricity use)",
+      "unit": "charges per kg CO2",
+      "operation": "multiply"
+    }
+  },
+  "changelog": [
+    {
+      "version": "2.0.0",
+      "date": "2026-11-02",
+      "summary": "RecycleMeter launch registry. Net savings multipliers and equivalency constants for the initial release."
+    }
+  ]
+}
