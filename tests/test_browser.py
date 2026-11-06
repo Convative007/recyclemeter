@@ -243,3 +243,19 @@ def test_early_submit_does_not_reload(browser, site_url):
     pg.click("button[type=submit]")
     pg.wait_for_function("document.querySelector('#co2-value').textContent === '170.0'")
     ctx.close()
+
+
+def test_about_section_content(page, site_url):
+    page.goto(site_url + "/index.html")
+    about = page.inner_text("#about")
+    for needed in ["Making Recycling Understandable. Making Everyday Actions Measurable.",
+                   "initiative of VOiLA Sustainable Technologies Pvt. Ltd.",
+                   "Foundation for Science, Innovation and Development (FSID)",
+                   "Our Vision \u2014 From Awareness to Measurable Action",
+                   "Our belief is simple:"]:
+        assert needed in about, needed
+    assert "non-profit" not in about
+    # disclaimer is the last thing in the section, in small muted text
+    assert page.evaluate("document.querySelector('#about > .wrap').lastElementChild.className") == "about-disclaimer"
+    size = page.evaluate("parseFloat(getComputedStyle(document.querySelector('.about-disclaimer')).fontSize)")
+    assert size < 14
