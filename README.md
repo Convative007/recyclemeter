@@ -2,7 +2,7 @@
 
 RecycleMeter is a plastic recycling impact calculator. You enter a plastic type and the weight recycled. It estimates the greenhouse gas emissions avoided by not producing the same amount of virgin plastic, and shows them as everyday equivalents: trees, litres of petrol and smartphone charges.
 
-RecycleMeter is a research-led sustainability initiative developed under the scientific leadership of Prof. Suryasarathi Bose, Department of Materials Engineering, Indian Institute of Science (IISc), Bengaluru.
+RecycleMeter is a free, non-commercial sustainability education and awareness initiative.
 
 Live reference copy: <https://convative007.github.io/recyclemeter/>
 
@@ -19,7 +19,7 @@ It is a static front end (HTML, CSS, JavaScript) with no backend. Python is used
 | How It Works | Formula, emission factor table, equivalency constants; a "Methodology & Science" accordion that opens with the "System Scope & Recycling Methodology" callout, then the assumptions |
 | Results footnote | Mechanical-recycling note under the equivalents and the virgin-versus-recycled chart |
 | Impact Reports | Printable report with a reference number and date; print or save as PDF; download data (JSON) |
-| About | Initiative description and scientific leadership |
+| About | Initiative description, vision and disclaimer |
 | Contact | "Email us at impact@recyclemeter.org" |
 | Footer | "Methodology & Sources" with six academic and industry references |
 

@@ -129,7 +129,7 @@ def test_bad_report_link(page, site_url):
 def test_page_has_required_content(page, site_url):
     page.goto(site_url + "/index.html")
     body = page.inner_text("body")
-    for needed in ["How It Works", "Impact Reports", "About RecycleMeter", "Prof. Suryasarathi Bose",
+    for needed in ["How It Works", "Impact Reports", "About RecycleMeter",
                    "Methodology & Sources", "Faraca, G., & Astrup, T. (2019)", "Association of Plastic Recyclers (APR) & Franklin Associates. (2020)", "aligned with the principles of the US EPA Waste Reduction Model (WARM) and ISO 14044/14067"]:
         assert needed in body, needed
 
@@ -259,3 +259,10 @@ def test_about_section_content(page, site_url):
     assert page.evaluate("document.querySelector('#about > .wrap').lastElementChild.className") == "about-disclaimer"
     size = page.evaluate("parseFloat(getComputedStyle(document.querySelector('.about-disclaimer')).fontSize)")
     assert size < 14
+
+
+def test_no_mention_of_former_lead(page, site_url):
+    for path in ["/index.html", "/report.html#m=PET&q=100&u=kg&t=once&d=2026-11-06"]:
+        page.goto(site_url + path)
+        page.wait_for_timeout(300)
+        assert "bose" not in page.content().lower(), path

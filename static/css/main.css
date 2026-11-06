@@ -295,11 +295,7 @@ details.assume li { margin-bottom: .45rem; }
 @media (max-width: 60rem) { .about { grid-template-columns: minmax(0, 1fr); } }
 .about-text p { font-size: 1.05rem; color: var(--ink-2); }
 .about-text > p:first-of-type { font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); color: var(--ink); font-weight: 500; line-height: 1.5; }
-.lead-card { padding: 1.5rem; }
-.lead-card .role { font-size: .78rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--green-700); margin-bottom: .9rem; }
-.lead-card h3 { font-size: 1.25rem; margin-bottom: .35rem; }
-.lead-card p { margin: 0; color: var(--ink-2); font-size: .95rem; }
-.offer { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; gap: .6rem; }
+.offer { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
 .offer li { padding: 1rem 1.1rem; }
 .offer b { display: block; margin-bottom: .15rem; }
 .offer span { color: var(--ink-2); font-size: .92rem; }
