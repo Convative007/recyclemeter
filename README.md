@@ -4,7 +4,7 @@ RecycleMeter is a plastic recycling impact calculator. You enter a plastic type 
 
 RecycleMeter is a free, non-commercial sustainability education and awareness initiative.
 
-Live reference copy: <https://convative007.github.io/recyclemeter/>
+Live site: <https://recyclemeter.org>
 
 It is a static front end (HTML, CSS, JavaScript) with no backend. Python is used to build it, serve it locally and test it.
 
@@ -118,6 +118,6 @@ dist/                     generated output (git-ignored)
 
 ## Deployment
 
-Every push to `main` builds the site and publishes it to GitHub Pages (`.github/workflows/pages.yml`).
+Every push to `main` builds the site and publishes it to GitHub Pages (`.github/workflows/pages.yml`), served at the custom domain recyclemeter.org. DNS is at GoDaddy: four `A` records for `@` (185.199.108–111.153) and a `www` CNAME to `convative007.github.io`.
 
 `dist/` is plain static files with relative links, so it can also be hosted on Netlify, Vercel or any static host.
