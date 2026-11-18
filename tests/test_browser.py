@@ -165,8 +165,8 @@ def test_wcag_aa(browser, site_url, path, scheme):
 def test_email_in_contact_section(page, site_url):
     page.goto(site_url + "/index.html")
     contact = page.locator("#contact")
-    assert "Email us at impact@recyclemeter.org" in contact.inner_text()
-    assert contact.locator("a").get_attribute("href") == "mailto:impact@recyclemeter.org"
+    assert "Email us at recyclemeter@voila3d.in" in contact.inner_text()
+    assert contact.locator("a").get_attribute("href") == "mailto:recyclemeter@voila3d.in"
     assert page.get_attribute(".nav a:has-text('Contact')", "href") == "index.html#contact"
 
 

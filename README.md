@@ -20,7 +20,7 @@ It is a static front end (HTML, CSS, JavaScript) with no backend. Python is used
 | Results footnote | Mechanical-recycling note under the equivalents and the virgin-versus-recycled chart |
 | Impact Reports | Printable report with a reference number and date; print or save as PDF; download data (JSON) |
 | About | Initiative description, vision and disclaimer |
-| Contact | "Email us at impact@recyclemeter.org" |
+| Contact | "Email us at recyclemeter@voila3d.in" |
 | Footer | "Methodology & Sources" with six academic and industry references |
 
 ## Calculation
